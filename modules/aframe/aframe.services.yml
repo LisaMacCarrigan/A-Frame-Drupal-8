@@ -1,0 +1,4 @@
+services:
+  plugin.manager.aframe.component:
+    class: Drupal\aframe\AFrameComponentPluginManager
+    parent: default_plugin_manager

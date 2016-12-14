@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function aframe_theme() {
+  $items['aframe_coords'] = [
+    'render element' => 'element',
+    'file'           => 'aframe.theme.inc',
+  ];
+
+  $items['aframe_field'] = [
+    'render element' => 'element',
+  ];
+
+  $items['aframe_tag'] = [
+    'render element' => 'element',
+    'file'           => 'aframe.theme.inc',
+  ];
+
+  $items['views_view_aframe'] = [
+    'variables' => [
+      'view'    => NULL,
+      'options' => NULL,
+      'rows'    => NULL,
+      'title'   => NULL,
+    ],
+    'file'      => 'aframe.theme.inc',
+  ];
+
+  return $items;
+}
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function aframe_element_info_alter(array &$types) {
+  // Add '<a-scene>' element.
+  $types['aframe_scene'] = $types['aframe_tag'];
+  $types['aframe_scene']['#attached'] = [
+    'library' => ['aframe/aframe'],
+  ];
+  $types['aframe_scene']['#tag'] = 'scene';
+
+  // Add primitives.
+  $primitives = [
+    'camera',
+    'cube',
+    'curvedimage',
+    'cylinder',
+    'image',
+    'light',
+    'model',
+    'plane',
+    'sky',
+    'sphere',
+    'video',
+    'videosphere',
+  ];
+  foreach ($primitives as $primitive) {
+    $types["aframe_{$primitive}"] = $types['aframe_tag'];
+    $types["aframe_{$primitive}"]['#tag'] = $primitive;
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
+function aframe_theme_suggestions_field_alter(array &$suggestions, array $variables) {
+  $element = $variables['element'];
+  if (strpos($element['#formatter'], 'aframe_') === 0) {
+    $suggestions = ['aframe_field'];
+  }
+}
